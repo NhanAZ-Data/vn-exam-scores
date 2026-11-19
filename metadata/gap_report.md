@@ -1,32 +1,32 @@
-# Gap report
+# Coverage and data gaps
 
-## What is currently complete enough for score analysis
+## Coverage and cross-checks
 
-- THPT/tốt nghiệp THPT score-level data is locally available for 2016-2026, with 10,865,001 canonical rows.
-- 2026 was cross-checked against an independent `anhdung98/diem_thi_2026` release. The SBD set and compared score/language fields match exactly.
-- 2025 official Government portal workbooks were downloaded for CT2018 and CT2006. Their row counts match the canonical 2025 CSV files: 1,131,136 CT2018 rows and 22,090 CT2006 rows.
+- High school exam score data from 2016 to 2026 is available locally, with 10,865,001 canonical rows.
+- The 2026 data was cross-checked against the independent `anhdung98/diem_thi_2026` release. The candidate-number sets and compared score and language fields match exactly.
+- Government portal workbooks for the 2025 CT2018 and CT2006 exams have row counts that match the canonical CSV files. The CT2018 workbook has 1,131,136 rows and the CT2006 workbook has 22,090 rows.
 
-## Where detailed identity fields exist
+## Identity fields
 
-- The local 2013-2014 legacy university/college entrance dataset includes `HovaTen` and `NgaySinh`.
-- The 2016-2026 THPT score datasets checked so far expose SBD, province/exam code, subjects, and scores, but do not expose names or dates of birth as reusable bulk fields.
+- The 2013-2014 legacy university and college entrance data contains `HovaTen` and `NgaySinh`.
+- The reviewed 2016-2026 high school score data contains candidate numbers, province or exam codes, subjects, and scores. It does not provide names or dates of birth as reusable bulk fields.
 
-## Important missing or weak areas
+## Missing or limited data
 
-- No 2015 raw file is present in the current canonical source.
-- For 2016-2026, birth month/date and name are not present in the bulk datasets reviewed. Inferring these from SBD or score pages would be speculative unless a source explicitly publishes them.
-- Province codes are not perfectly stable across all years. 2026 uses the post-reorganization 34-province list, while earlier years use the older 63/64-code scheme.
-- Post-phúc-khảo scores are not consistently available in the public raw data sources reviewed; most releases explicitly state they are pre- or non-phúc-khảo snapshots.
-- Cổng tra cứu by SBD is useful for spot-checking, but it is not a clean bulk source and may include captcha/rate limits/terms restrictions.
+- The current canonical source has no raw file for 2015.
+- The reviewed bulk datasets from 2016 to 2026 do not contain names or birth dates. Inferring them from candidate numbers or score lookup pages would be speculative unless a source explicitly publishes them.
+- Province codes are not stable across all years. The 2026 data uses the post-reorganization list of 34 provinces. Earlier years use older lists with 63 or 64 codes.
+- Post-exam regrading scores are not consistently available in the reviewed public raw data. Most releases identify themselves as pre-regrading snapshots or do not include regrading results.
+- The official candidate-number lookup portal is useful for spot checks. It is not a clean bulk source and may have CAPTCHA, rate limits, or restrictive terms.
 
-## Causality warning
+## Causality limits
 
-Name and birth-month analyses can show associations, not causal effects by themselves. To make causal claims, you would need a credible design: controls for province/year/school/exam block, cohort effects, family and socioeconomic confounding, and a defensible identification strategy. The feature tables here are built to support exploratory analysis and hypothesis generation first.
+Name and birth-month analyses show associations. They do not establish causal effects by themselves. A credible causal design would need to account for province, year, school or exam block, cohort effects, family and socioeconomic factors, and a defensible identification strategy. The feature tables support exploratory analysis and hypothesis generation.
 
 ## Privacy handling
 
-The raw source retains the original 2013-2014 identity fields. Derived outputs in `data/analysis` avoid full names and exact birth dates by default, using birth month/year and name parts or aggregate statistics instead. Do not publish row-level identity data without a separate legal/ethical review.
+The raw source retains the 2013-2014 identity fields. The derived row-level feature file splits names and birth dates into components, but it still contains identifying information. Aggregated tables omit row-level birth dates. The name aggregates still contain name parts. Do not publish row-level identity data without a separate legal and ethical review.
 
 ## Legacy name cleaning
 
-Some 2013-2014 names are encoded with TCVN3-style legacy characters. `scripts/build_legacy_features.py` normalizes detected TCVN3 names/tokens to Unicode in the derived feature outputs while leaving the raw source unchanged. The output column `name_font_fixed` marks rows where a name or name token was converted.
+Some 2013-2014 names use TCVN3-style legacy characters. `scripts/build_legacy_features.py` converts detected names and name tokens to Unicode in derived outputs while leaving the raw source unchanged. The `name_font_fixed` column marks converted rows.

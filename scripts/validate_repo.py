@@ -28,10 +28,15 @@ def validate_summary() -> None:
         rows = list(csv.DictReader(handle))
     total = sum(int(row["rows"]) for row in rows)
     if total != EXPECTED_THPT_ROWS:
-        raise AssertionError(f"THPT row count mismatch: {total} != {EXPECTED_THPT_ROWS}")
+        raise AssertionError(
+            "High school exam row count mismatch. "
+            f"Expected {EXPECTED_THPT_ROWS}, got {total}."
+        )
     if len(rows) != 15:
-        raise AssertionError(f"Expected 15 canonical THPT files, got {len(rows)}")
-    print(f"OK summary inventory: {len(rows)} files, {total:,} rows")
+        raise AssertionError(
+            f"Expected 15 canonical high school exam files. Found {len(rows)}."
+        )
+    print(f"The summary inventory contains {len(rows)} files and {total:,} rows.")
 
 
 def validate_legacy() -> None:
@@ -39,7 +44,10 @@ def validate_legacy() -> None:
     assert_exists(feature_path)
     rows = count_data_rows(feature_path)
     if rows != EXPECTED_LEGACY_ROWS:
-        raise AssertionError(f"Legacy feature row count mismatch: {rows} != {EXPECTED_LEGACY_ROWS}")
+        raise AssertionError(
+            "Legacy feature row count mismatch. "
+            f"Expected {EXPECTED_LEGACY_ROWS}, got {rows}."
+        )
 
     name_stats = Path("data/analysis/legacy_name_score_stats.csv")
     birth_stats = Path("data/analysis/legacy_birth_month_score_stats.csv")
@@ -49,8 +57,11 @@ def validate_legacy() -> None:
     bad_tokens = ["NguyÔn", "TrÇn", "Lª", "Ph¹m", "Hoµng", "§"]
     leftovers = [token for token in bad_tokens if token in text]
     if leftovers:
-        raise AssertionError(f"Legacy name stats still contain likely TCVN3 tokens: {leftovers}")
-    print(f"OK legacy features: {rows:,} rows")
+        raise AssertionError(
+            "Legacy name statistics contain likely TCVN3 tokens. "
+            f"Found {leftovers}."
+        )
+    print(f"The legacy feature output contains {rows:,} rows.")
 
 
 def validate_crosscheck_2026() -> None:
@@ -67,10 +78,16 @@ def validate_crosscheck_2026() -> None:
         if key.startswith("mismatched_") and value != 0
     }
     if metrics.get("left_only_sbd") != 0 or metrics.get("right_only_sbd") != 0:
-        raise AssertionError("2026 crosscheck has SBD set differences")
+        raise AssertionError("Candidate-number sets differ in the 2026 cross-check.")
     if nonzero_mismatches:
-        raise AssertionError(f"2026 crosscheck mismatches: {nonzero_mismatches}")
-    print("OK 2026 crosscheck: SBD and mapped score fields match")
+        raise AssertionError(
+            "The 2026 cross-check found score mismatches. "
+            f"Details are {nonzero_mismatches}."
+        )
+    print(
+        "The 2026 cross-check confirms that the candidate-number sets "
+        "and mapped score fields match."
+    )
 
 
 def main() -> None:
